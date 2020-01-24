@@ -87,12 +87,11 @@ class ViewController: UIViewController {
     }
     
     //converts doubles to currency string
-    func convertDoubleToCurrency(amount: Double) -> String {
+    func convertDoubleToCurrency(amount: Double) -> String? {
             let formatter = NumberFormatter()
             formatter.numberStyle = .currency
         
-        
-            return formatter.string(from: NSNumber(value: amount))!
+            return formatter.string(from: NSNumber(value: amount))
         }
     
 }
