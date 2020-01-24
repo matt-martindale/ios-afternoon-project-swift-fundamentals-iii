@@ -8,11 +8,11 @@
 
 import UIKit
 
+//types of currency we will convert
 enum Currency {
     case cad
     case mxn
 }
-
 var currency: Currency = Currency.cad
 
 class ViewController: UIViewController {
@@ -30,32 +30,70 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction func convertButtonTapped(_ sender: UIButton) {
+        guard let currencyString =
+            fromCurrencyTextField.text else { return }
         
+        //checks if userInput is a valid number
+        guard let currencyUSD = Double(currencyString) else {
+            toCurrencyTextField.text = "Number Invalid"
+            return
+        }
+        
+        //checks which currency user selected and calculates proper conversion
+        var currencyConverted: Double
+        if cadButton.isSelected {
+            currencyConverted = convertToCAD(currencyUSD)
+        } else {
+            currencyConverted = convertToMXN(currencyUSD)
+        }
+        
+        toCurrencyTextField.text = convertDoubleToCurrency(amount: currencyConverted)
     }
     
     @IBAction func cadButtonTapped(_ sender: UIButton) {
-        cadButton.isSelected.toggle()
-        mxnButton.isSelected.toggle()
-        
+
+        toCurrencyLabel.text = "Currency (CAD)"
+        currency = Currency.cad
         //checks if currency selected is cad
-        if cadButton.isSelected {
-            currency = Currency.cad
-            
+        if cadButton.isSelected {} else {
+            mxnButton.isSelected.toggle()
+            cadButton.isSelected.toggle()
         }
     }
     
     @IBAction func mxnButtonTapped(_ sender: UIButton) {
-        mxnButton.isSelected.toggle()
-        cadButton.isSelected.toggle()
-        
+
+        toCurrencyLabel.text = "Currency (MXN)"
+        currency = Currency.mxn
         //checks if currency selected is mxn
-        if mxnButton.isSelected {
-            currency = Currency.mxn
-            
+        if mxnButton.isSelected {} else {
+            cadButton.isSelected.toggle()
+            mxnButton.isSelected.toggle()
         }
     }
     
     // MARK: - Helper Methods
+    
+    //converts US Dollars to Canadian Dollars
+    func convertToCAD(_ dollars: Double) -> Double {
+        let currencyConverted = dollars * 1.33
+        return currencyConverted
+    }
+    
+    //converts US Dollars to Mexican Pesos
+    func convertToMXN(_ dollars: Double) -> Double {
+        let currencyConverted = dollars * 19.70
+        return currencyConverted
+    }
+    
+    //converts doubles to currency string
+    func convertDoubleToCurrency(amount: Double) -> String {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .currency
+        
+        
+            return formatter.string(from: NSNumber(value: amount))!
+        }
     
 }
 
